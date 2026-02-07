@@ -39,3 +39,4 @@ server:
   #   - "/calendars/{calendar_name}" -> http://server:port/calendars/my-calendar
   calendar_url_path: "/cal/{calendar_name}.ics"
   token: "Generate via openssl rand -base64 64 | tr '+/' '-_' | tr -d '=' | tr -d '\n'"
+  secure_healthcheck: True

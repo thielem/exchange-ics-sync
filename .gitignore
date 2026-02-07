@@ -35,7 +35,6 @@ ENV/
 .DS_Store
 
 # Configuration files with secrets
-config.yaml
 .env
 
 # Docker

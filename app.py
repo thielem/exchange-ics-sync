@@ -285,9 +285,10 @@ def sync_calendar_worker(cfg):
 
 @app.get("/health")
 async def health(request: Request):
-    """Health check endpoint — requires Bearer token."""
-    if not _verify_bearer_token(request):
-        return _not_found()
+    """Health check endpoint — optionally requires Bearer token."""
+    if config.get('server', {}).get('secure_healthcheck', True):
+        if not _verify_bearer_token(request):
+            return _not_found()
 
     return JSONResponse({
         'status': 'healthy',

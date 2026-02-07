@@ -28,14 +28,17 @@ A Python service that connects to your Exchange on-premise server, fetches calen
 
 2. **Configure the service**
 
-   Edit `config.yaml` with your Exchange server details:
+  **Token**
+  Generate a token using e.g. `openssl rand -base64 64 | tr '+/' '-_' | tr -d '=' | tr -d '\n'`.
+  The token can be any random string and is meant to keep your calendar deployment secure. It must be passed as a URL query parameter. Any request without a valid token will return `404`.
+
+   Create and edit `config.yaml` with your Exchange server details:
    ```yaml
    exchange:
      server: "mail.example.com"
      email: "user@example.com"
      username: "username"
      password: "your-password"
-     domain: "DOMAIN"
      auth_type: "NTLM"
 
    calendar:
@@ -48,25 +51,21 @@ A Python service that connects to your Exchange on-premise server, fetches calen
      host: "0.0.0.0"
      port: 8080
      calendar_url_path: "/cal/{calendar_name}.ics"
+     token: "my-secure-token"
    ```
 
-3. **Authenticate to GHCR (only if the image is private)**
+   If you wish to store secrets in environment variables instead, just configure an empty string in the yaml file. Environment variables will overwrite the `config.yaml` values.
 
-   Create a GitHub Personal Access Token with `read:packages`, then:
-   ```bash
-   echo "$GHCR_TOKEN" | docker login ghcr.io -u thielem --password-stdin
-   ```
-
-4. **Start the service**
+1. **Start the service**
    ```bash
    docker-compose up -d
    ```
 
-5. **Access your calendar**
+2. **Access your calendar**
 
    The ICS feed will be available at:
    ```
-   http://localhost:8080/cal/my-calendar.ics
+   http://localhost:8080/cal/my-calendar.ics?token=my-secure-token
    ```
 
 ## Configuration
@@ -81,7 +80,6 @@ The main configuration file with the following sections:
 - `email`: Email address of the calendar account
 - `username`: Username for authentication
 - `password`: Password for authentication
-- `domain`: Windows domain (optional, leave empty if not needed)
 - `auth_type`: Authentication type (NTLM, Basic, or Digest)
 
 #### Calendar Settings
@@ -101,6 +99,8 @@ The main configuration file with the following sections:
     - `/cal/{calendar_name}.ics` → `http://server:port/cal/my-calendar.ics`
     - `/{calendar_name}.ics` → `http://server:port/my-calendar.ics`
     - `/calendars/{calendar_name}` → `http://server:port/calendars/my-calendar`
+- `token`: URL query parameter that is used to authenticate requests to the calendar.
+- `secure_healthcheck`: Whether the token must be passed as a Bearer when calling `/health`. This is recommended to avoid information leakage via the health endpoint. If enabled, any request with invalid token will return `404`.
 
 ### Environment Variables
 
@@ -137,7 +137,7 @@ To use environment variables with Docker Compose, uncomment and set them in `doc
 
 ### GET /health
 
-Health check endpoint for monitoring.
+Health check endpoint for monitoring. 
 
 **Response:**
 ```json
