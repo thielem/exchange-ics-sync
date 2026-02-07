@@ -28,10 +28,12 @@ A Python service that connects to your Exchange on-premise server, fetches calen
 
 2. **Configure the service**
 
-  **Token**
-  Generate a token using e.g. `openssl rand -base64 64 | tr '+/' '-_' | tr -d '=' | tr -d '\n'`.
-  The token can be any random string and is meant to keep your calendar deployment secure. It must be passed as a URL query parameter. Any request without a valid token will return `404`.
+   **Token**
+   Generate a token using e.g. `openssl rand -base64 64 | tr '+/' '-_' | tr -d '=' | tr -d '\n'`.
+   
+   The token can be any random string and is meant to keep your calendar deployment secure. It must be passed as a URL query parameter. Any request without a valid token will return `404`.
 
+   **config.yaml**
    Create and edit `config.yaml` with your Exchange server details:
    ```yaml
    exchange:
@@ -204,10 +206,9 @@ If you can't connect to Exchange:
 
 ## Security Considerations
 
-- **Password Security**: Never commit `config.yaml` with real credentials to version control
-- **HTTPS**: Use a reverse proxy (nginx, Traefik) to add HTTPS for production
-- **Network Access**: Restrict access to the service using firewall rules
-- **Credentials**: Use environment variables or secrets management for sensitive data
+- **Security**: Use a secure token and consider using a random string for the calendar name as well.
+- **HTTPS**: Use a reverse proxy (nginx, Traefik) to add HTTPS for production.
+- **Network Access**: Restrict access to the service using firewall rules where feasible.
 
 
 ## License
