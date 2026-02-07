@@ -1,5 +1,7 @@
 # Exchange ICS Sync
 
+![version](https://img.shields.io/github/v/tag/thielem/exchange-ics-sync)
+
 A Python service that connects to your Exchange on-premise server, fetches calendar events, and serves them as an ICS feed via HTTP.
 
 ## Features
