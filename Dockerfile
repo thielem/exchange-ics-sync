@@ -26,10 +26,10 @@ COPY app.py .
 RUN mkdir -p /app/config
 
 # Copy default config file
-COPY config.example.yaml /app/config/config.example.yaml
+COPY config.yaml /app/config.yaml
 
 # Set environment variables
-ENV CONFIG_PATH=/app/config/config.yaml
+ENV CONFIG_PATH=/app/config.yaml
 ENV PYTHONUNBUFFERED=1
 
 # Expose port
