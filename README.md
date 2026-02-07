@@ -138,6 +138,7 @@ To use environment variables with Docker Compose, uncomment and set them in `doc
 ### GET /health
 
 Health check endpoint for monitoring. 
+
 If `secure_healthcheck == True`: Include Headers: `Authorization: Bearer my-secure-token`
 
 **Response:**
