@@ -1,6 +1,0 @@
-fastapi==0.115.5
-uvicorn[standard]==0.32.1
-exchangelib==5.4.3
-icalendar==6.1.0
-PyYAML==6.0.2
-pytz==2024.2

@@ -13,7 +13,7 @@ A Python service that connects to your Exchange on-premise server, fetches calen
 
 ## Requirements
 
-- Python 3.11+
+- Python 3.13+
 - Docker and Docker Compose (for containerized deployment)
 - Access to an Exchange on-premise server
 - Valid Exchange credentials
@@ -115,13 +115,13 @@ You can override configuration values using environment variables:
 - `SERVER_PORT`
 - `CONFIG_PATH`
 
-To use environment variables with Docker Compose, uncomment and set them in `docker-compose.yml`.
+To use environment variables with Docker Compose, uncomment and set them in `docker-compose.yml` or specify an `env_file`.
 
 ## Manual Installation (without Docker)
 
 1. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+   uv sync
    ```
 
 2. **Configure the service**
@@ -130,7 +130,7 @@ To use environment variables with Docker Compose, uncomment and set them in `doc
 
 3. **Run the service**
    ```bash
-   python app.py
+   uv run app.py
    ```
 
 ## API Endpoints
@@ -138,6 +138,7 @@ To use environment variables with Docker Compose, uncomment and set them in `doc
 ### GET /health
 
 Health check endpoint for monitoring. 
+If `secure_healthcheck == True`: Include Headers: `Authorization: Bearer my-secure-token`
 
 **Response:**
 ```json
@@ -147,7 +148,7 @@ Health check endpoint for monitoring.
 }
 ```
 
-### GET /cal/{calendar-name}.ics
+### GET /cal/{calendar-name}.ics?token=my-secure-token
 
 Serves the ICS calendar file (path configurable via `calendar_url_path`).
 
@@ -159,7 +160,7 @@ Serves the ICS calendar file (path configurable via `calendar_url_path`).
 
 1. Open Calendar app
 2. File → New Calendar Subscription
-3. Enter the calendar URL: `http://your-server:8080/cal/my-calendar.ics`
+3. Enter the calendar URL: `http://your-server:8080/cal/my-calendar.ics?token=my-secure-token`
 4. Set refresh frequency to match your sync interval
 
 ### Google Calendar
@@ -167,51 +168,14 @@ Serves the ICS calendar file (path configurable via `calendar_url_path`).
 1. Open Google Calendar
 2. Click "+" next to "Other calendars"
 3. Select "From URL"
-4. Enter the calendar URL: `http://your-server:8080/cal/my-calendar.ics`
+4. Enter the calendar URL: `http://your-server:8080/cal/my-calendar.ics?token=my-secure-token`
 
 ### Outlook
 
 1. Open Outlook
 2. File → Account Settings → Internet Calendars
 3. Click "New"
-4. Enter the calendar URL: `http://your-server:8080/cal/my-calendar.ics`
-
-## Docker Deployment
-
-### Building the Image
-
-```bash
-docker build -t exchange-ics-sync .
-```
-
-### Running with Docker
-
-```bash
-docker run -d \
-  -p 8080:8080 \
-  -v $(pwd)/config.yaml:/app/config/config.yaml:ro \
-  --name exchange-ics-sync \
-  exchange-ics-sync
-```
-
-### Using Docker Compose
-
-```bash
-# Start the service
-docker-compose up -d
-
-# Pull the latest image
-docker-compose pull
-
-# View logs
-docker-compose logs -f
-
-# Stop the service
-docker-compose down
-
-# Restart after pulling a new image
-docker-compose up -d
-```
+4. Enter the calendar URL: `http://your-server:8080/cal/my-calendar.ics?token=my-secure-token`
 
 ## Troubleshooting
 
@@ -244,30 +208,6 @@ If you can't connect to Exchange:
 - **Network Access**: Restrict access to the service using firewall rules
 - **Credentials**: Use environment variables or secrets management for sensitive data
 
-## Development
-
-### Project Structure
-
-```
-exchange-ics-sync/
-├── app.py                 # Main application
-├── config.yaml            # Configuration file
-├── requirements.txt       # Python dependencies
-├── Dockerfile             # Docker image definition
-├── docker-compose.yml     # Docker Compose configuration
-├── .env.example           # Environment variables template
-└── README.md              # This file
-```
-
-### Running Tests
-
-```bash
-# Install dev dependencies
-pip install -r requirements.txt
-
-# Run the application in debug mode
-python app.py
-```
 
 ## License
 

@@ -36,6 +36,7 @@ ENV/
 
 # Configuration files with secrets
 .env
+config.local.yaml
 
 # Docker
 docker-compose.override.yml

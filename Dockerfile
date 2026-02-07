@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.13-slim
 
 # Set working directory
 WORKDIR /app
@@ -10,11 +10,14 @@ RUN apt-get update && \
     libkrb5-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
-COPY requirements.txt .
+# Install uv
+RUN pip install --no-cache-dir uv
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy project metadata first for better caching
+COPY pyproject.toml uv.lock ./
+
+# Install Python dependencies with uv (no dev deps)
+RUN uv sync --frozen --no-dev
 
 # Copy application code
 COPY app.py .
@@ -37,4 +40,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD python -c "import socket; s = socket.create_connection(('localhost', 8080), timeout=5); s.close()" || exit 1
 
 # Run the application
-CMD ["python", "app.py"]
+CMD ["uv", "run", "python", "app.py"]
