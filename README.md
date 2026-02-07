@@ -86,7 +86,7 @@ The main configuration file with the following sections:
 
 #### Calendar Settings
 
-- `name`: Calendar identifier used in the URL
+- `name`: Calendar identifier (check your Outlook frontend)
 - `days_past`: Number of days in the past to fetch events (default: 30)
 - `days_future`: Number of days in the future to fetch events (default: 365)
 - `sync_interval_minutes`: How often to sync with Exchange (default: 15)
@@ -100,7 +100,7 @@ The main configuration file with the following sections:
   - Examples:
     - `/cal/{calendar_name}.ics` → `http://server:port/cal/my-calendar.ics`
     - `/{calendar_name}.ics` → `http://server:port/my-calendar.ics`
-    - `/calendars/{calendar_name}` → `http://server:port/calendars/my-calendar`
+    - `/random-string.ics`-> `http://server:port/random-string.ics`. **This is recommended for security purposes.**
 - `token`: URL query parameter that is used to authenticate requests to the calendar.
 - `secure_healthcheck`: Whether the token must be passed as a Bearer when calling `/health`. This is recommended to avoid information leakage via the health endpoint. If enabled, any request with invalid token will return `404`.
 
