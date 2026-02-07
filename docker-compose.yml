@@ -1,0 +1,32 @@
+services:
+  exchange-ics-sync:
+    image: ghcr.io/thielem/exchange-ics-sync:latest
+    container_name: exchange-ics-sync
+    volumes:
+      - ./config.example.yaml:/app/config.yaml:ro
+    environment:
+      # Change this path to your actual config.yaml, default is `/app/config.yaml`
+      - CONFIG_PATH=/app/config.yaml
+      # You can set environment variables to overwrite config.yaml values, for example:
+      # - EXCHANGE_SERVER=mail.example.com
+      # - EXCHANGE_EMAIL=user@example.com
+      # - EXCHANGE_USERNAME=username
+      # - EXCHANGE_PASSWORD=your-password
+      # - EXCHANGE_DOMAIN=DOMAIN
+      # - SERVER_HOST=0.0.0.0
+      # - SERVER_PORT=8080
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    pull_policy: always
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s = socket.create_connection(('localhost', 8080), timeout=5); s.close()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

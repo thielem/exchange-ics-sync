@@ -1,0 +1,41 @@
+# Exchange ICS Sync Configuration
+
+# Exchange Server Configuration
+exchange:
+  server: "email.company.de"
+  email: "first.last@company.de"
+  username: "username@company.de"
+  password: "password"
+  auth_type: "NTLM"   # Authentication type: NTLM, Basic, or Digest
+
+# Calendar Configuration
+calendar:
+  # Calendar display name
+  name: "Kalender"
+
+  # How many days in the past to fetch events
+  days_past: 365
+
+  # How many days in the future to fetch events
+  days_future: 365
+
+  # Sync interval in minutes
+  sync_interval_minutes: 15
+
+  default_timezone: "Europe/Berlin"
+
+# Server Configuration
+server:
+  # Host to bind to (0.0.0.0 for all interfaces)
+  host: "0.0.0.0"
+
+  # Port to listen on
+  port: 8080
+
+  # URL path for the calendar (use {calendar_name} as placeholder)
+  # Examples:
+  #   - "/cal/{calendar_name}.ics" -> http://server:port/cal/my-calendar.ics
+  #   - "/{calendar_name}.ics" -> http://server:port/my-calendar.ics
+  #   - "/calendars/{calendar_name}" -> http://server:port/calendars/my-calendar
+  calendar_url_path: "/cal/{calendar_name}.ics"
+  token: "Generate via openssl rand -base64 64 | tr '+/' '-_' | tr -d '=' | tr -d '\n'"

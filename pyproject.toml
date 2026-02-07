@@ -1,0 +1,12 @@
+[project]
+name = "exchange-ics-sync"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "exchangelib==5.4.3",
+    "fastapi==0.115.5",
+    "icalendar==6.1.0",
+    "pytz==2024.2",
+    "pyyaml==6.0.2",
+    "uvicorn[standard]==0.32.1",
+]
