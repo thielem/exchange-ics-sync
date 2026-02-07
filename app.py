@@ -15,6 +15,7 @@ import asyncio
 
 import yaml
 import hmac
+from importlib import metadata
 
 from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
@@ -84,6 +85,17 @@ calendar_cache = None
 cache_lock = Lock()
 last_sync_time = None
 config = None
+
+
+def _get_app_version() -> str:
+    """Return app version from env or package metadata."""
+    env_version = os.getenv("APP_VERSION")
+    if env_version:
+        return env_version
+    try:
+        return metadata.version("exchange-ics-sync")
+    except metadata.PackageNotFoundError:
+        return "unknown"
 
 
 def load_config():
@@ -293,6 +305,7 @@ async def health(request: Request):
     return JSONResponse({
         'status': 'healthy',
         'last_sync': last_sync_time.isoformat() if last_sync_time else None,
+        'version': _get_app_version(),
     })
 
 

@@ -30,6 +30,8 @@ COPY config.yaml /app/config.yaml
 
 # Set environment variables
 ENV CONFIG_PATH=/app/config.yaml
+ARG APP_VERSION=unknown
+ENV APP_VERSION=${APP_VERSION}
 ENV PYTHONUNBUFFERED=1
 
 # Expose port
