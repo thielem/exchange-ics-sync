@@ -187,8 +187,14 @@ def convert_exchange_item_to_ical_event(item):
     event.add('uid', uid)
     event.add('summary', item.subject or '(No Subject)')
 
-    if item.text_body:
-        event.add('description', item.text_body[:1000])
+    attendees = (getattr(item, 'required_attendees', None) or []) + (getattr(item, 'optional_attendees', None) or [])
+    me = (getattr(getattr(item, 'account', None), 'primary_smtp_address', None) or '').lower()
+    names = [a.mailbox.name or a.mailbox.email_address for a in attendees
+             if a.mailbox and (a.mailbox.email_address or '').lower() != me]
+    lines = [f"- {n}" for n in names[:10]] + ([f"+ {len(names) - 10} more"] if len(names) > 10 else [])
+    description = ("With\n" + "\n".join(lines) + "\n\n" if names else '') + (item.text_body or '')[:1000]
+    if description:
+        event.add('description', description)
 
     if item.location:
         event.add('location', item.location)
