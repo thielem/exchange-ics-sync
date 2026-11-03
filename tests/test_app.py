@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 import pytz
 import pytest
@@ -105,8 +105,9 @@ def test_calendar_503_when_cache_empty():
 
 
 def test_convert_exchange_item_to_ical_event_all_day():
-    start = datetime(2024, 1, 1, 0, 0, tzinfo=pytz.UTC)
-    end = datetime(2024, 1, 2, 0, 0, tzinfo=pytz.UTC)
+    # exchangelib returns plain dates for all-day items, with an inclusive end
+    start = date(2024, 1, 1)
+    end = date(2024, 1, 1)
     item = DummyItem(
         start=start,
         end=end,
@@ -127,8 +128,9 @@ def test_convert_exchange_item_to_ical_event_all_day():
     event = app.convert_exchange_item_to_ical_event(item)
     assert str(event["summary"]) == "Subject"
     assert str(event["location"]) == "Room 1"
-    assert event["dtstart"].dt == start.date()
-    assert event["dtend"].dt == end.date()
+    assert event["dtstart"].dt == start
+    assert event["dtend"].dt == date(2024, 1, 2)
+    assert event.to_ical().count(b"\nUID:") == 1
     assert str(event["organizer"]) == "mailto:org@example.com"
     assert event["priority"] == 1
     assert event["status"] == "CONFIRMED"
