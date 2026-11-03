@@ -184,7 +184,6 @@ def convert_exchange_item_to_ical_event(item):
     uid = f"{base}-{start_uid}"
     event.add('uid', uid)
 
-    event.add('uid', uid)
     event.add('summary', item.subject or '(No Subject)')
 
     attendees = (getattr(item, 'required_attendees', None) or []) + (getattr(item, 'optional_attendees', None) or [])
@@ -201,8 +200,9 @@ def convert_exchange_item_to_ical_event(item):
 
     # Date/time handling
     if item.is_all_day:
-        event.add('dtstart', item.start.date())
-        event.add('dtend', item.end.date())
+        # exchangelib returns dates for all-day items, with an inclusive end; iCal DTEND is exclusive
+        event.add('dtstart', item.start)
+        event.add('dtend', item.end + timedelta(days=1))
     else:
         event.add('dtstart', item.start)
         event.add('dtend', item.end)
