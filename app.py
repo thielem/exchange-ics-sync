@@ -241,10 +241,10 @@ def fetch_calendar_events(cfg):
         tz = EWSTimeZone(cfg['calendar']['default_timezone'])
         now = EWSDateTime.now(tz=tz)
 
-        logger.info(f"Fetching events from {now} to {now + timedelta(days=days_future)}")
+        logger.info(f"Fetching events from {now - timedelta(days=days_past)} to {now + timedelta(days=days_future)}")
 
         items = account.calendar.view(
-            start=now,
+            start=now - timedelta(days=days_past),
             end=now + timedelta(days=days_future)
         )
 
