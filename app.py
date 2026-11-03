@@ -188,10 +188,15 @@ def convert_exchange_item_to_ical_event(item):
 
     attendees = (getattr(item, 'required_attendees', None) or []) + (getattr(item, 'optional_attendees', None) or [])
     me = (getattr(getattr(item, 'account', None), 'primary_smtp_address', None) or '').lower()
-    names = [a.mailbox.name or a.mailbox.email_address for a in attendees
-             if a.mailbox and (a.mailbox.email_address or '').lower() != me]
-    lines = [f"- {n}" for n in names[:10]] + ([f"+ {len(names) - 10} more"] if len(names) > 10 else [])
-    description = ("With\n" + "\n".join(lines) + "\n\n" if names else '') + (item.text_body or '')[:1000]
+    groups = {'✅ Accepted': [], '❔ Tentative': [], '❌ Declined': [], '✉️ Invited (no response)': []}
+    status = {'Accept': '✅ Accepted', 'Organizer': '✅ Accepted', 'Tentative': '❔ Tentative', 'Decline': '❌ Declined'}
+    for a in attendees:
+        if a.mailbox and (a.mailbox.email_address or '').lower() != me:
+            is_org = a.response_type == 'Organizer' or (item.organizer and (a.mailbox.email_address or '').lower() == (item.organizer.email_address or '').lower())
+            groups[status.get(a.response_type, '✉️ Invited (no response)')].append((a.mailbox.name or a.mailbox.email_address) + (' (Organizer)' if is_org else ''))
+    sections = [title + "\n" + "\n".join([f"- {n}" for n in names[:10]] + ([f"+ {len(names) - 10} more"] if len(names) > 10 else []))
+                for title, names in groups.items() if names]
+    description = "\n\n".join(sections + [(item.text_body or '')[:1000]]).strip()
     if description:
         event.add('description', description)
 
