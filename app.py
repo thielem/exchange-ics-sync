@@ -31,6 +31,8 @@ import pytz
 
 from exchangelib.winzone import MS_TIMEZONE_TO_IANA_MAP, CLDR_TO_MS_TIMEZONE_MAP
 MS_TIMEZONE_TO_IANA_MAP[''] = "Europe/Berlin"
+MS_TIMEZONE_TO_IANA_MAP['Customized Time Zone'] = "Europe/Berlin"
+MS_TIMEZONE_TO_IANA_MAP['(UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna'] = "Europe/Berlin"
 
 # Configure logging
 logging.basicConfig(
