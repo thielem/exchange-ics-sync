@@ -9,6 +9,7 @@ A Python service that connects to your Exchange on-premise server, fetches calen
 - **All-day Events**: Properly handles all-day events
 - **Recurring Events**: Converts Exchange recurrence patterns to iCalendar RRULE format
 - **Timezone Support**: Maintains timezone information for accurate event times
+- **(NEW v0.1.3) Participants:** Show up in your event description
 - **Configurable URL Paths**: Customize the ICS feed URL path to your preference
 - **Auto-sync**: Periodically syncs calendar data in the background
 - **Docker Ready**: Easy deployment via Docker Compose
